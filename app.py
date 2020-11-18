@@ -91,13 +91,21 @@ animal_to_fact = {
 @app.route('/animal_facts')
 def animal_facts():
     """Show a form to choose an animal and receive facts."""
-
     # TODO: Collect the form data and save as variables
+    users_animal_select = request.args.get('animal')
+
+    users_animal_fact = "None"
+
+    if users_animal_select is not None:
+        users_animal_fact = animal_to_fact[users_animal_select]
 
     context = {
         # TODO: Enter your context variables here for:
         # - the list of all animals (get from animal_to_fact)
         # - the chosen animal fact (may be None if the user hasn't filled out the form yet)
+        'animal_to_fact': animal_to_fact.keys(),
+        'users_animal_fact': users_animal_fact
+
     }
     return render_template('animal_facts.html', **context)
 
