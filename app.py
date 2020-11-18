@@ -1,10 +1,12 @@
 from flask import Flask, request, render_template
 from PIL import Image, ImageFilter
 from pprint import PrettyPrinter
+from dotenv import load_dotenv
 import json
 import os
 import random
 import requests
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -192,7 +194,7 @@ def image_filter():
 # GIF SEARCH ROUTE
 ################################################################################
 
-API_KEY = 'LIVDSRZULELA'
+api_key = os.getenv('API_KEY')
 TENOR_URL = 'https://api.tenor.com/v1/search'
 pp = PrettyPrinter(indent=4)
 
@@ -203,24 +205,27 @@ def gif_search():
     if request.method == 'POST':
         # TODO: Get the search query & number of GIFs requested by the user, store each as a
         # variable
+        users_gif = request.form.get('search_query')
+        gif_quantity = request.form.get('quantity')
 
         response = requests.get(
             TENOR_URL,
             {
                 # TODO: Add in key-value pairs for:
                 # - 'q': the search query
+                'q': users_gif,
                 # - 'key': the API key (defined above)
+                'key': api_key,
                 # - 'limit': the number of GIFs requested
+                'limit': gif_quantity
             })
 
         gifs = json.loads(response.content).get('results')
 
         context = {
             'gifs': gifs
-        }
 
-        # Uncomment me to see the result JSON!
-        # pp.pprint(gifs)
+        }
 
         return render_template('gif_search.html', **context)
     else:
